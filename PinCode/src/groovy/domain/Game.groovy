@@ -17,18 +17,22 @@ class Game {
     int gameResult = -1
 
     void playGame() {
-        getInput("press any key to start")
+        println "It is a simple game. \nGuess a pin code, analyze the hint you receive and make another one. \nGood Luck!!"
+        getInput("press Enter to start \n")
         originalPinCode = PinCode.createRandomUniqueDigitPinCode()
-        //println originalPinCode
+        println originalPinCode
 
         while (gameResult < 0) {
             displayHistory()
-            PinCode userGuessPinCode = upc.createUserGuess()
-            println 'analyzing your input '
-
+            String input = getInput("Make your guess or type Q to surrender!\n")
+            if (input.equalsIgnoreCase("q")) {
+                println 'LOOOOL! \nHere is the original pincode: ' + originalPinCode
+                gameResult = 1
+                break
+            }
+            PinCode userGuessPinCode = upc.createUserGuess(input)
             Hint hint = analyzer.makeAHint(originalPinCode, userGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: userGuessPinCode, hint: hint)
-            println thisTry
             if (analyzer.haveYouGuessedRight(originalPinCode, userGuessPinCode)) {
                 numberOfTries++
                 println 'You hacked this PinCode with ' + numberOfTries + ' tries!'
@@ -36,21 +40,11 @@ class Game {
                     println 'You Are So Stupid!!'
                 }
                 gameResult = 1
-            } else {
-                String decision = getInput('Do you want to surrender? Type Y to quit or any other kay to resume')
-                if (decision.equalsIgnoreCase("y")) {
-                    println 'LOOOOL!'
-                    println 'this was the original pincode: ' + originalPinCode
-                    gameResult = 1
-                }
-                previousTries.add(thisTry)
-                numberOfTries++
             }
-
+            previousTries.add(thisTry)
+            numberOfTries++
         }
-
         println 'Thanks for the game'
-
     }
 
     private void displayHistory() {

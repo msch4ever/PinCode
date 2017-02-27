@@ -7,9 +7,8 @@ import domain.PinCode
  */
 class UserPincodeCreator {
 
-    PinCode createUserGuess() {
+    PinCode createUserGuess(String input) {
         while(true) {
-            String input = getInput("type in your PinCode (it should contain only digits) ")
             if (input != null){
                 Map<String, Integer> resultMap = validate(input)
                 if (resultMap.size() > 1) {
