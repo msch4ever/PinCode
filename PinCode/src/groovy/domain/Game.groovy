@@ -32,6 +32,9 @@ class Game {
             if (analyzer.haveYouGuessedRight(originalPinCode, userGuessPinCode)) {
                 numberOfTries++
                 println 'You hacked this PinCode with ' + numberOfTries + ' tries!'
+                if (numberOfTries > 10) {
+                    println 'You Are So Stupid!!'
+                }
                 gameResult = 1
             } else {
                 String decision = getInput('Do you want to surrender? Type Y to quit or any other kay to resume')
