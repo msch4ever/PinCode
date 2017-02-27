@@ -8,15 +8,12 @@ import domain.PinCode
 class UserPincodeCreator {
 
     PinCode createUserGuess(String input) {
-        while(true) {
-            if (input != null){
-                Map<String, Integer> resultMap = validate(input)
-                if (resultMap.size() > 1) {
-                    return createPinCode(resultMap)
-                } else {
-                    println "Please type valid pin code"
-                }
-            }
+        Map<String, Integer> resultMap = validate(input)
+        if (resultMap.size() > 1) {
+            return createPinCode(resultMap)
+        } else {
+            println "Please type valid pin code"
+            return null
         }
     }
 

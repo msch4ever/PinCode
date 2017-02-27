@@ -1,7 +1,7 @@
 package domain
 
 import domain.helpers.PreviousTry
-import domain.helpers.UserGuessAnalyzer
+import domain.helpers.GuessAnalyzer
 import domain.helpers.UserPincodeCreator
 /**
  * Created by Jenson Harvey on 26.02.2017.
@@ -12,7 +12,7 @@ class Game {
     List<PreviousTry> previousTries = []
     PinCode originalPinCode
     UserPincodeCreator upc = new UserPincodeCreator()
-    UserGuessAnalyzer analyzer = new UserGuessAnalyzer()
+    GuessAnalyzer analyzer = new GuessAnalyzer()
 
     int gameResult = -1
 
@@ -30,7 +30,16 @@ class Game {
                 gameResult = 1
                 break
             }
-            PinCode userGuessPinCode = upc.createUserGuess(input)
+            PinCode userGuessPinCode = null
+            if (input != null){
+                userGuessPinCode = upc.createUserGuess(input)
+            } else {
+                continue
+            }
+
+            if (userGuessPinCode == null) {
+                continue
+            }
             Hint hint = analyzer.makeAHint(originalPinCode, userGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: userGuessPinCode, hint: hint)
             if (analyzer.haveYouGuessedRight(originalPinCode, userGuessPinCode)) {
