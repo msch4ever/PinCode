@@ -1,2 +1,5 @@
 PinCode/build/
 PinCode/
+.idea/
+.gradle/
+build/
