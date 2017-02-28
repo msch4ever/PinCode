@@ -1,5 +1,6 @@
 package domain
 
+import domain.PinCode.PinCode
 import domain.helpers.PreviousTry
 import domain.helpers.GuessAnalyzer
 import domain.helpers.UserPincodeCreator
@@ -20,7 +21,7 @@ class Game {
         println "It is a simple game. \nGuess a pin code, analyze the hint you receive and make another one. \nGood Luck!!"
         getInput("press Enter to start \n")
         originalPinCode = PinCode.createRandomUniqueDigitPinCode()
-        println originalPinCode
+        //println originalPinCode
 
         while (gameResult < 0) {
             displayHistory()

@@ -1,7 +1,7 @@
 package domain.helpers
 
 import domain.Hint
-import domain.PinCode
+import domain.PinCode.PinCode
 
 /**
  * Created by Jenson Harvey on 26.02.2017.

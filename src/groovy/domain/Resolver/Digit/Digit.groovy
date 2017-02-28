@@ -4,7 +4,7 @@ package domain.Resolver.Digit
  * Created by Jenson Harvey on 27.02.2017.
  */
 enum Digit {
-    ZERO ('0', 1),
+    ZERO ('0', 0),
     ONE  ('1', 1),
     TWO  ('2', 2),
     THREE('3', 3),
@@ -19,4 +19,8 @@ enum Digit {
     String value
 
     Digit(String value, int id) { }
+
+    static Digit findById(int id) {
+        values()[id]
+    }
 }

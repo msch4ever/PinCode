@@ -7,4 +7,7 @@ class DigitHolder {
 
     Digit digit
     DigitStats stats
+    boolean used
+    boolean doNotBelong
+    boolean wereOnAllPossitions
 }

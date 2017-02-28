@@ -4,6 +4,4 @@ package domain.Resolver
  */
 class Resolver {
 
-
-
 }

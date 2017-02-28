@@ -1,6 +1,6 @@
 package domain.helpers
 
-import domain.PinCode
+import domain.PinCode.PinCode
 
 /**
  * Created by Jenson Harvey on 26.02.2017.

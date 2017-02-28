@@ -1,5 +1,6 @@
 package domain
 
+import domain.PinCode.PinCode
 import domain.Resolver.Resolver
 import domain.helpers.GuessAnalyzer
 import domain.helpers.PreviousTry
