@@ -7,7 +7,18 @@ class DigitHolder {
 
     Digit digit
     DigitStats stats
+    Set<Integer> positions = new HashSet<>()
     boolean used
     boolean doNotBelong
-    boolean wereOnAllPossitions
+    boolean wereOnAllPositions
+
+    @Override
+    String toString() {
+        return  "digit=" + digit +
+                ", stats=" + stats +
+                ", positions=" + positions +
+                ", used=" + used +
+                ", doNotBelong=" + doNotBelong +
+                ", wereOnAllPossitions=" + wereOnAllPositions + "\n"
+    }
 }

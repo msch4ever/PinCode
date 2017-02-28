@@ -18,7 +18,12 @@ enum Digit {
     int id
     String value
 
-    Digit(String value, int id) { }
+    Digit() { }
+
+    Digit(String value, int id) {
+        this.value = value
+        this.id = id
+    }
 
     static Digit findById(int id) {
         values()[id]

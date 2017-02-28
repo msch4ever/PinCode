@@ -1,30 +1,51 @@
 package domain.Resolver.Digit
 
+import domain.PinCode.DigitPinCode
 /**
  * Created by Jenson Harvey on 28.02.2017.
  */
 class DigitPool {
-    DigitHolder zero
-    DigitHolder one
-    DigitHolder two
-    DigitHolder three
-    DigitHolder four
-    DigitHolder five
-    DigitHolder six
-    DigitHolder seven
-    DigitHolder eight
-    DigitHolder nine
+    List<DigitHolder> pool
 
     DigitPool() {
-        this.zero  = new DigitHolder(digit: Digit.ZERO)
-        this.one   = new DigitHolder(digit: Digit.ONE)
-        this.two   = new DigitHolder(digit: Digit.TWO)
-        this.three = new DigitHolder(digit: Digit.THREE)
-        this.four  = new DigitHolder(digit: Digit.FOUR)
-        this.five  = new DigitHolder(digit: Digit.FIVE)
-        this.six   = new DigitHolder(digit: Digit.SIX)
-        this.seven = new DigitHolder(digit: Digit.SEVEN)
-        this.eight = new DigitHolder(digit: Digit.EIGHT)
-        this.nine  = new DigitHolder(digit: Digit.NINE)
+        this.pool = [
+                new DigitHolder(digit: Digit.ZERO),
+                new DigitHolder(digit: Digit.ONE),
+                new DigitHolder(digit: Digit.TWO),
+                new DigitHolder(digit: Digit.THREE),
+                new DigitHolder(digit: Digit.FOUR),
+                new DigitHolder(digit: Digit.FIVE),
+                new DigitHolder(digit: Digit.SIX),
+                new DigitHolder(digit: Digit.SEVEN),
+                new DigitHolder(digit: Digit.EIGHT),
+                new DigitHolder(digit: Digit.NINE)
+        ]
+    }
+
+    void updatePoolAfterPick(DigitPinCode pinCode) {
+        updateUsed(pinCode)
+        updatePositions(pinCode)
+    }
+
+    void updateUsed(DigitPinCode pinCode) {
+        pinCode.getUsedDigits().id.each {
+            pool.get(it).used = true
+        }
+    }
+
+    void updatePositions(DigitPinCode pinCode) {
+        List<Integer> usedDigitsIds = pinCode.getUsedDigits().id
+        usedDigitsIds.eachWithIndex { int digit, int position ->
+            DigitHolder currentDigit = pool.get(digit)
+            currentDigit.positions.add(position)
+            if (currentDigit.positions.size() == 4) {
+                currentDigit.wereOnAllPositions = true
+            }
+        }
+    }
+
+    @Override
+    String toString() {
+        return pool.values().each { it.toString() + "\n" }
     }
 }
