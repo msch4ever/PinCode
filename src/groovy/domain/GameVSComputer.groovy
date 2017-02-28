@@ -2,10 +2,8 @@ package domain
 
 import domain.PinCode.PinCode
 import domain.Resolver.Resolver
-import domain.helpers.GuessAnalyzer
 import domain.helpers.PreviousTry
 import domain.helpers.UserPincodeCreator
-
 /**
  * Created by Jenson Harvey on 26.02.2017.
  */
@@ -15,7 +13,6 @@ class GameVSComputer {
     List<PreviousTry> previousTries = []
     PinCode originalPinCode
     UserPincodeCreator upc = new UserPincodeCreator()
-    GuessAnalyzer analyzer = new GuessAnalyzer()
 
     Resolver resolver = new Resolver()
 
@@ -28,14 +25,14 @@ class GameVSComputer {
         originalPinCode = upc.createUserGuess(code)
         println originalPinCode
 
-        PinCode computorGuessPinCode = PinCode.createRandomUniqueDigitPinCode() //frist computor try
-        Hint hint = analyzer.makeAHint(originalPinCode, computorGuessPinCode)
+        PinCode computorGuessPinCode = resolver.pickFirstPinCode() //frist computor try
+        Hint hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
         previousTries.add(new PreviousTry(pinCode: computorGuessPinCode, hint: hint))
         judge(computorGuessPinCode)
 
         while (gameResult < 0) {
             computorGuessPinCode = resolver.makeGuess()
-            hint = analyzer.makeAHint(originalPinCode, computorGuessPinCode)
+            hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: computorGuessPinCode, hint: hint)
             judge(computorGuessPinCode)
             println thisTry

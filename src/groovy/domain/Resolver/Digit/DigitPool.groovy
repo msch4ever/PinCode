@@ -44,6 +44,10 @@ class DigitPool {
         }
     }
 
+    void removeUnneededDigits(DigitPinCode pinCode) {
+        pinCode.getUsedDigits().id.each { pool.remove(it)}
+    }
+
     @Override
     String toString() {
         return pool.values().each { it.toString() + "\n" }
