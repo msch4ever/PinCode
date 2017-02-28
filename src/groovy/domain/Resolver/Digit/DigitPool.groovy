@@ -1,24 +1,26 @@
 package domain.Resolver.Digit
 
 import domain.PinCode.DigitPinCode
+import domain.PinCode.PinCode
+
 /**
  * Created by Jenson Harvey on 28.02.2017.
  */
 class DigitPool {
-    List<DigitHolder> pool
+    Map<String, DigitHolder> pool
 
     DigitPool() {
         this.pool = [
-                new DigitHolder(digit: Digit.ZERO),
-                new DigitHolder(digit: Digit.ONE),
-                new DigitHolder(digit: Digit.TWO),
-                new DigitHolder(digit: Digit.THREE),
-                new DigitHolder(digit: Digit.FOUR),
-                new DigitHolder(digit: Digit.FIVE),
-                new DigitHolder(digit: Digit.SIX),
-                new DigitHolder(digit: Digit.SEVEN),
-                new DigitHolder(digit: Digit.EIGHT),
-                new DigitHolder(digit: Digit.NINE)
+                "ZERO" : new DigitHolder(digit: Digit.ZERO),
+                "ONE"  : new DigitHolder(digit: Digit.ONE),
+                "TWO"  : new DigitHolder(digit: Digit.TWO),
+                "THREE": new DigitHolder(digit: Digit.THREE),
+                "FOUR" : new DigitHolder(digit: Digit.FOUR),
+                "FIVE" : new DigitHolder(digit: Digit.FIVE),
+                "SIX"  : new DigitHolder(digit: Digit.SIX),
+                "SEVEN": new DigitHolder(digit: Digit.SEVEN),
+                "EIGHT": new DigitHolder(digit: Digit.EIGHT),
+                "NINE" : new DigitHolder(digit: Digit.NINE)
         ]
     }
 
@@ -28,24 +30,50 @@ class DigitPool {
     }
 
     void updateUsed(DigitPinCode pinCode) {
-        pinCode.getUsedDigits().id.each {
-            pool.get(it).used = true
+        pinCode.getUsedDigits().value.each {
+            pool.get(it)?.used = true
         }
     }
 
     void updatePositions(DigitPinCode pinCode) {
-        List<Integer> usedDigitsIds = pinCode.getUsedDigits().id
-        usedDigitsIds.eachWithIndex { int digit, int position ->
+        List<String> usedDigitsIds = pinCode.getUsedDigits().value
+        usedDigitsIds.eachWithIndex { String digit, int position ->
             DigitHolder currentDigit = pool.get(digit)
-            currentDigit.positions.add(position)
-            if (currentDigit.positions.size() == 4) {
-                currentDigit.wereOnAllPositions = true
+            if (currentDigit) {
+                currentDigit.positions.add(position)
+                if (currentDigit.positions.size() == 4) {
+                    currentDigit.wereOnAllPositions = true
+                }
             }
         }
     }
 
     void removeUnneededDigits(DigitPinCode pinCode) {
-        pinCode.getUsedDigits().id.each { pool.remove(it)}
+        pinCode.getUsedDigits().value.each { pool.remove(it)}
+    }
+
+    PinCode createPinCodeFormPool() {
+        List<Integer> availableDigits = pool.collect {
+            it.value.digit.id
+        }
+        int randomSize = availableDigits.size()
+
+        PinCode pinCode = new PinCode()
+        pinCode.firstPlace = availableDigits.get(Math.random() * randomSize as int)
+        while( true ) {
+            pinCode.secondPlace = availableDigits.get(Math.random() * randomSize as int)
+            if( pinCode.secondPlace != pinCode.firstPlace ) break
+        }
+        while( true ) {
+            pinCode.thirdPlace = availableDigits.get(Math.random() * randomSize as int)
+            if( pinCode.thirdPlace != pinCode.firstPlace && pinCode.thirdPlace != pinCode.secondPlace ) break
+        }
+        while( true ) {
+            pinCode.fourthPlace = availableDigits.get(Math.random() * randomSize as int)
+            if( pinCode.fourthPlace != pinCode.firstPlace && pinCode.fourthPlace != pinCode.secondPlace && pinCode.fourthPlace != pinCode.thirdPlace ) break
+        }
+        pinCode.representation = pinCode.setRepresentaion()
+        pinCode
     }
 
     @Override

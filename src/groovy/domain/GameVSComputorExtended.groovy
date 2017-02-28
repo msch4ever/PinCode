@@ -1,21 +1,19 @@
 package domain
 
+import domain.PinCode.DigitPinCode
 import domain.PinCode.PinCode
 import domain.Resolver.Resolver
-import domain.helpers.GuessAnalyzer
 import domain.helpers.PreviousTry
 import domain.helpers.UserPincodeCreator
-
 /**
  * Created by Jenson Harvey on 26.02.2017.
  */
-class GameVSComputer {
+class GameVSComputorExtended {
 
     int numberOfTries
     List<PreviousTry> previousTries = []
     PinCode originalPinCode
     UserPincodeCreator upc = new UserPincodeCreator()
-    GuessAnalyzer analyzer = new GuessAnalyzer()
 
     Resolver resolver = new Resolver()
 
@@ -28,15 +26,19 @@ class GameVSComputer {
         originalPinCode = upc.createUserGuess(code)
         println originalPinCode
 
-        PinCode computorGuessPinCode = PinCode.createRandomUniqueDigitPinCode() //frist computor try
-        Hint hint = analyzer.makeAHint(originalPinCode, computorGuessPinCode)
+        PinCode computorGuessPinCode = resolver.pickFirstPinCode() //frist computor try
+        Hint hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
         previousTries.add(new PreviousTry(pinCode: computorGuessPinCode, hint: hint))
+        resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))
+        resolver.hintAnalyzer.analyzeHint(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
         judge(computorGuessPinCode)
 
         while (gameResult < 0) {
-            computorGuessPinCode = PinCode.createRandomUniqueDigitPinCode()
-            hint = analyzer.makeAHint(originalPinCode, computorGuessPinCode)
+            computorGuessPinCode = resolver.pool.createPinCodeFormPool()
+            hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: computorGuessPinCode, hint: hint)
+            resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))
+            resolver.hintAnalyzer.analyzeHint(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
             judge(computorGuessPinCode)
             println thisTry
             previousTries.add(thisTry)
@@ -46,7 +48,7 @@ class GameVSComputer {
     }
 
     private void judge(PinCode computorGuessPinCode) {
-        if (analyzer.haveYouGuessedRight(originalPinCode, computorGuessPinCode)) {
+        if (resolver.guessAnalyzer.haveYouGuessedRight(originalPinCode, computorGuessPinCode)) {
             numberOfTries++
             println 'Computor hacked your PinCode with ' + numberOfTries + ' tries!'
             gameResult = 1
