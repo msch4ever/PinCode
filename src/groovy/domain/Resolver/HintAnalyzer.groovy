@@ -9,10 +9,14 @@ import domain.Resolver.Digit.DigitPool
  */
 class HintAnalyzer {
 
-    void analyzeHint(Hint hint, DigitPool pool, DigitPinCode pinCode) {
+    boolean noHints
+
+    void verifyNoHits(Hint hint, DigitPool pool, DigitPinCode pinCode) {
         if (isHintEmpty(hint)) {
             pool.removeUnneededDigits(pinCode)
+            noHints = true
         }
+        noHints = false
     }
 
     private boolean isHintEmpty(Hint hint) {

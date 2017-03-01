@@ -30,7 +30,7 @@ class GameVSComputorExtended {
         Hint hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
         previousTries.add(new PreviousTry(pinCode: computorGuessPinCode, hint: hint))
         resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))
-        resolver.hintAnalyzer.analyzeHint(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
+        resolver.hintAnalyzer.verifyNoHits(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
         judge(computorGuessPinCode)
 
         while (gameResult < 0) {
@@ -38,7 +38,9 @@ class GameVSComputorExtended {
             hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: computorGuessPinCode, hint: hint)
             resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))
-            resolver.hintAnalyzer.analyzeHint(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
+            if (!resolver.hintAnalyzer.noHints) {
+                resolver.hintAnalyzer.verifyNoHits(hint, resolver.pool, new DigitPinCode(computorGuessPinCode))
+            }
             judge(computorGuessPinCode)
             println thisTry
             previousTries.add(thisTry)
