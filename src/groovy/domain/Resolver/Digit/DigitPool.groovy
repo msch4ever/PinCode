@@ -84,7 +84,15 @@ class DigitPool {
         Digit.findById(availableDigits.get(Math.random() * availableDigits.size() as int))
     }
 
-    PinCode createPinCodeWithThreeRandomDigits(Digit digit, Hint hint) {
+    PinCode createPinCodeWithThreeRandomDigits(Digit digit, Hint hint, int position) {
+
+    }
+
+    PinCode createPinCodeWithTwoRandomDigits(Set<Digit> digits, Hint hint, Set<Integer> positions) {
+
+    }
+
+    PinCode createPinCodeWithThreeRandomDigits(Set<Digit> digits, Hint hint, Set<Integer> positions) {
 
     }
 

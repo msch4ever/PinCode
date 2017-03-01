@@ -27,25 +27,35 @@ class Resolver {
     }
 
     PinCode pickPinCode(Hint hint, DigitPinCode previous) {
+        Random randomGenerator = new Random()
         int leave = hint.contain + hint.match
         Set<Digit> digitsToLeave = []
-        Set<Digit> digitsToAdd = []
         if (leave == 0) return pool.createPinCodeFormPool()
         if (leave == 1) {
-            digitsToLeave.addAll(previous.pickOneDigit())
-            return pool.createPinCodeWithThreeRandomDigits()
+            int position = randomGenerator.nextInt(4)
+            digitsToLeave.add(previous.usedDigits[position + 1])
+            return pool.createPinCodeWithThreeRandomDigits(digitsToLeave[0], hint, position)
         }
-
-
-
-
-
-
-        while (digitsToLeave.size() < leave) {
-            Digit digit = pool.pickRandomDigit()
-            if (!previous.usedDigits.contains(digit)) {
-
+        if (leave == 2) {
+            Set<Integer> positions = []
+            while (positions.size() < 2) {
+                int random = randomGenerator.nextInt(4) + 1
+                positions.add(random)
             }
+            digitsToLeave.add(previous.usedDigits[positions[0]])
+            digitsToLeave.add(previous.usedDigits[positions[1]])
+            return pool.createPinCodeWithTwoRandomDigits(digitsToLeave, hint, positions)
+        }
+        if (leave == 3) {
+            Set<Integer> positions = []
+            while (positions.size() < 3) {
+                int random = randomGenerator.nextInt(4) + 1
+                positions.add(random)
+            }
+            digitsToLeave.add(previous.usedDigits[positions[0]])
+            digitsToLeave.add(previous.usedDigits[positions[1]])
+            digitsToLeave.add(previous.usedDigits[positions[2]])
+            return pool.createPinCodeWithThreeRandomDigits(digitsToLeave, hint, positions)
         }
     }
 
