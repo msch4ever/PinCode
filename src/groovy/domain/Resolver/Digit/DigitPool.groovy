@@ -1,5 +1,6 @@
 package domain.Resolver.Digit
 
+import domain.Hint
 import domain.PinCode.DigitPinCode
 import domain.PinCode.PinCode
 
@@ -30,13 +31,13 @@ class DigitPool {
     }
 
     void updateUsed(DigitPinCode pinCode) {
-        pinCode.getUsedDigits().value.each {
+        pinCode.usedDigits.value.each {
             pool.get(it)?.used = true
         }
     }
 
     void updatePositions(DigitPinCode pinCode) {
-        List<String> usedDigitsIds = pinCode.getUsedDigits().value
+        List<String> usedDigitsIds = pinCode.usedDigits.value
         usedDigitsIds.eachWithIndex { String digit, int position ->
             DigitHolder currentDigit = pool.get(digit)
             if (currentDigit) {
@@ -74,6 +75,17 @@ class DigitPool {
         }
         pinCode.representation = pinCode.setRepresentaion()
         pinCode
+    }
+
+    Digit pickRandomDigit() {
+        List<Integer> availableDigits = pool.collect {
+            it.value.digit.id
+        }
+        Digit.findById(availableDigits.get(Math.random() * availableDigits.size() as int))
+    }
+
+    PinCode createPinCodeWithThreeRandomDigits(Digit digit, Hint hint) {
+
     }
 
     @Override

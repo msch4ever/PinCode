@@ -3,7 +3,6 @@ package domain.Resolver
 import domain.Hint
 import domain.PinCode.DigitPinCode
 import domain.Resolver.Digit.DigitPool
-
 /**
  * Created by Jenson Harvey on 01.03.2017.
  */
