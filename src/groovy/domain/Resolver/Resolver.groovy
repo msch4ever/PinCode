@@ -32,7 +32,7 @@ class Resolver {
         Set<Digit> digitsToLeave = []
         if (leave == 4) {
             pool.removeRestDigits(previous) //TODO: PUT MORE LOGIC HERE!
-            return pool.createPinCodeFormPool()
+            return pool.shufflePinCode(previous)
         }
         if (leave == 0) {
             return pool.createPinCodeFormPool()

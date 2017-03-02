@@ -1,5 +1,6 @@
 package domain.Resolver.Digit
 
+import domain.Hint
 import domain.PinCode.DigitPinCode
 import domain.PinCode.PinCode
 /**
@@ -7,6 +8,7 @@ import domain.PinCode.PinCode
  */
 class DigitPool {
     Map<String, DigitHolder> pool
+    Random randomGenerator
 
     DigitPool() {
         this.pool = [
@@ -21,11 +23,18 @@ class DigitPool {
                 "EIGHT": new DigitHolder(digit: Digit.EIGHT),
                 "NINE" : new DigitHolder(digit: Digit.NINE)
         ]
+        randomGenerator = new Random()
     }
 
-    void updatePoolAfterPick(DigitPinCode pinCode) {
+    void updatePoolAfterPick(DigitPinCode pinCode, Hint hint) {
         updateUsed(pinCode)
         updatePositions(pinCode)
+        updateHints(pinCode, hint)
+        pool.each {
+            if (it.value.shouldYouRemoveMe()) {
+                pool.remove(it)
+            }
+        }
     }
 
     void updateUsed(DigitPinCode pinCode) {
@@ -35,14 +44,24 @@ class DigitPool {
     }
 
     void updatePositions(DigitPinCode pinCode) {
-        List<String> usedDigitsIds = pinCode.usedDigits.value
-        usedDigitsIds.eachWithIndex { String digit, int position ->
+        List<String> usedDigits = pinCode.usedDigits.value
+         usedDigits.eachWithIndex { String digit, int position ->
             DigitHolder currentDigit = pool.get(digit)
             if (currentDigit) {
                 currentDigit.positions.add(position)
                 if (currentDigit.positions.size() == 4) {
                     currentDigit.wereOnAllPositions = true
                 }
+            }
+        }
+    }
+
+    void updateHints(DigitPinCode pinCode, Hint hint) {
+        List<String> usedDigits = pinCode.usedDigits.value
+        usedDigits.each { String digit ->
+            DigitHolder currentDigit = pool.get(digit)
+            if (currentDigit) {
+                currentDigit.hints.add(hint)
             }
         }
     }
@@ -80,7 +99,16 @@ class DigitPool {
             if( pinCode.fourthPlace != pinCode.firstPlace && pinCode.fourthPlace != pinCode.secondPlace && pinCode.fourthPlace != pinCode.thirdPlace ) break
         }
         pinCode.representation = pinCode.setRepresentaion()
+        (0..3).each { int it ->
+            updateNumberOfPicks(pinCode, it)
+        }
         pinCode
+    }
+
+    private void updateNumberOfPicks(PinCode pinCode, int position) {
+        pool.find {
+            it.value.digit.id == pinCode.representation[position]
+        }.value.numberOfPicks++
     }
 
     Digit pickRandomDigit() {
@@ -90,28 +118,15 @@ class DigitPool {
         Digit.findById(availableDigits.get(Math.random() * availableDigits.size() as int))
     }
 
-    /*PinCode createPinCodeWithThreeRandomDigits(Digit digitToKeep, Hint hint, int position) {
-
-    }
-
-    PinCode createPinCodeWithTwoRandomDigits(Set<Digit> digits, Hint hint, Set<Integer> positions) {
-
-    }
-
-    PinCode createPinCodeWithThreeRandomDigits(Set<Digit> digits, Hint hint, Set<Integer> positions) {
-
-    }*/
-
-    DigitPinCode createFromDigitList(Set<Digit> digits, Set<Integer> positions) {
-        Random randomGenerator = new Random()
+    DigitPinCode createFromDigitList(Set<Digit> digitsToLeave, Set<Integer> positions) {
         List<Digit> newUsedDigits = Arrays.asList(new Digit[4])
-        digits.eachWithIndex { Digit it, int i ->
+        digitsToLeave.eachWithIndex { Digit it, int i ->
             newUsedDigits.set(positions[i], it)
         }
         Set<Integer> unusedPositions = []
         while (unusedPositions.size() < 4 - positions.size()) {
             int random = randomGenerator.nextInt(4)
-            if (!positions.contains(random)){
+            if (!positions.contains(random)) {
                 unusedPositions.add(random)
                 while (true) {
                     Digit digit = pickRandomDigit()
@@ -122,11 +137,22 @@ class DigitPool {
                 }
             }
         }
-        new DigitPinCode(newUsedDigits[0], newUsedDigits[1], newUsedDigits[2], newUsedDigits[3])
+        DigitPinCode pinCode = new DigitPinCode(newUsedDigits[0], newUsedDigits[1], newUsedDigits[2], newUsedDigits[3])
+        (0..3).each { int it ->
+            updateNumberOfPicks(pinCode.regularPinCode, it)
+        }
+        pinCode
     }
 
-    PinCode shufflePinCode(PinCode) {
-
+    PinCode shufflePinCode(DigitPinCode pinCode) {
+        Set<Integer> newPositions = []
+        while (newPositions.size() < 4) {
+            int random = randomGenerator.nextInt(4)
+            if (!newPositions.contains(random)) {
+                newPositions.add(random)
+            }
+        }
+        createFromDigitList(pinCode.usedDigits, newPositions).regularPinCode
     }
 
     @Override

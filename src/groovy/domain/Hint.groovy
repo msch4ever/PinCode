@@ -10,6 +10,10 @@ class Hint {
 
     Hint() { }
 
+    boolean noMatches() {
+        match == 0
+    }
+
     @Override
     String toString() {
         return  "match=" + match +  ", contain=" + contain

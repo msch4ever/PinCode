@@ -8,14 +8,14 @@ import domain.Resolver.Digit.DigitPool
  */
 class HintAnalyzer {
 
-    boolean noHints
+    boolean noHits
 
     void verifyNoHits(Hint hint, DigitPool pool, DigitPinCode pinCode) {
         if (isHintEmpty(hint)) {
             pool.removeUnneededDigits(pinCode)
-            noHints = true
+            noHits = true
         }
-        noHints = false
+        noHits = false
     }
 
     private boolean isHintEmpty(Hint hint) {

@@ -4,8 +4,10 @@ import domain.GameVSComputorExtended
  */
 class RunVSComputorExtended {
     static void main(String[] args) {
-        GameVSComputorExtended game = new GameVSComputorExtended()
-        game.playGame()
+        boolean decision = true
+        while (decision) {
+            decision = new GameVSComputorExtended().playGame()
+        }
         System.exit(0)
     }
 }
