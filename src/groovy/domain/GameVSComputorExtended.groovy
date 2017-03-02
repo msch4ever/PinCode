@@ -13,6 +13,7 @@ class GameVSComputorExtended {
     int numberOfTries
     List<PreviousTry> previousTries = []
     PinCode originalPinCode
+    PinCode computorGuessPinCode
     UserPincodeCreator upc = new UserPincodeCreator()
 
     Resolver resolver = new Resolver()
@@ -26,7 +27,7 @@ class GameVSComputorExtended {
         originalPinCode = upc.createUserGuess(code)
         println originalPinCode
 
-        PinCode computorGuessPinCode = resolver.pickFirstPinCode() //frist computor try
+        computorGuessPinCode = resolver.pickFirstPinCode() //frist computor try
         Hint hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
         previousTries.add(new PreviousTry(pinCode: computorGuessPinCode, hint: hint))
         resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))
@@ -34,7 +35,7 @@ class GameVSComputorExtended {
         judge(computorGuessPinCode)
 
         while (gameResult < 0) {
-            computorGuessPinCode = resolver.pool.createPinCodeFormPool()
+            computorGuessPinCode = resolver.pickPinCode(hint, new DigitPinCode(computorGuessPinCode))
             hint = resolver.guessAnalyzer.makeAHint(originalPinCode, computorGuessPinCode)
             PreviousTry thisTry = new PreviousTry(pinCode: computorGuessPinCode, hint: hint)
             resolver.pool.updatePoolAfterPick(new DigitPinCode(computorGuessPinCode))

@@ -1,9 +1,7 @@
 package domain.Resolver.Digit
 
-import domain.Hint
 import domain.PinCode.DigitPinCode
 import domain.PinCode.PinCode
-
 /**
  * Created by Jenson Harvey on 28.02.2017.
  */
@@ -50,7 +48,15 @@ class DigitPool {
     }
 
     void removeUnneededDigits(DigitPinCode pinCode) {
-        pinCode.getUsedDigits().value.each { pool.remove(it)}
+        pinCode.usedDigits.value.each { this.pool.remove(it)}
+    }
+
+    // TODO: refactor this
+    void removeRestDigits(DigitPinCode pinCode) {
+        def values = this.pool.findAll {
+            !pinCode.usedDigits.value.contains(it.value.digit.value)
+        }
+        values.each { this.pool.remove(it.value.digit.value)}
     }
 
     PinCode createPinCodeFormPool() {
@@ -84,7 +90,7 @@ class DigitPool {
         Digit.findById(availableDigits.get(Math.random() * availableDigits.size() as int))
     }
 
-    PinCode createPinCodeWithThreeRandomDigits(Digit digit, Hint hint, int position) {
+    /*PinCode createPinCodeWithThreeRandomDigits(Digit digitToKeep, Hint hint, int position) {
 
     }
 
@@ -93,6 +99,33 @@ class DigitPool {
     }
 
     PinCode createPinCodeWithThreeRandomDigits(Set<Digit> digits, Hint hint, Set<Integer> positions) {
+
+    }*/
+
+    DigitPinCode createFromDigitList(Set<Digit> digits, Set<Integer> positions) {
+        Random randomGenerator = new Random()
+        List<Digit> newUsedDigits = Arrays.asList(new Digit[4])
+        digits.eachWithIndex { Digit it, int i ->
+            newUsedDigits.set(positions[i], it)
+        }
+        Set<Integer> unusedPositions = []
+        while (unusedPositions.size() < 4 - positions.size()) {
+            int random = randomGenerator.nextInt(4)
+            if (!positions.contains(random)){
+                unusedPositions.add(random)
+                while (true) {
+                    Digit digit = pickRandomDigit()
+                    if (!newUsedDigits.contains(digit)) {
+                        newUsedDigits.set(random, digit)
+                        break
+                    }
+                }
+            }
+        }
+        new DigitPinCode(newUsedDigits[0], newUsedDigits[1], newUsedDigits[2], newUsedDigits[3])
+    }
+
+    PinCode shufflePinCode(PinCode) {
 
     }
 
